@@ -1,0 +1,100 @@
+#!/bin/bash
+
+#cherche les salons existants
+tmp01=$(ls -la /home | grep "^d.....x..x" | cut -f4 -d" ")
+for var in $tmp01
+do
+	DIRECTORY=/home/$var/.chat
+	if [ -d "$DIRECTORY" ] 
+	then
+		SERVEUR="$SERVEUR $var"
+	fi
+done
+
+#Definition du nb de salons trouvés
+NB_SERVEUR=$(echo $SERVEUR | wc -w)
+
+#Creation d'un serveur si besoin
+if [ $NB_SERVEUR -eq 0 ] || [[ $1 == "true" ]]
+	then
+	echo "creation d'un salon ..."
+	echo ""
+	echo "Attention : si vous quittez la conversation, le salon se fermera et deconnectera les autres membres !"
+	echo ""
+	mkdir -p /home/$(whoami)/.chat/
+	chmod +x /home/$(whoami)
+	chmod 777 /home/$(whoami)/.chat/
+	touch /home/$(whoami)/.chat/chat
+	chmod 777 /home/$(whoami)/.chat/chat
+	SERVEUR=" $(whoami)"
+	NB_SERVEUR=1
+fi
+
+
+
+#choix serveur
+if [ $NB_SERVEUR -eq 1 ]
+	then
+	SERVEUR_CHOISIT=$(echo "$SERVEUR" | cut -f2 -d" ")
+else
+	echo "Plusieurs salons trouvés"
+	echo ""
+	echo "Choisissez un salon parmi les suivants :"
+	echo ""
+
+	let "ITERATE=$NB_SERVEUR+1"
+	for i in `seq 2 $ITERATE`
+	do
+		(echo "$SERVEUR" | cut -f$i -d" ")
+	done
+
+	echo ""
+	read -p "salon : " SERVEUR_CHOISIT
+fi
+
+PSEUDO=$(whoami)
+
+DIR_SERVEUR=/home/$SERVEUR_CHOISIT/.chat
+
+#creation du script d'ecriture
+rm -fr saisie.sh
+touch saisie.sh
+chmod +x saisie.sh
+
+echo "while [ true ]" >> saisie.sh
+echo "do" >> saisie.sh
+echo "read -p \"votre message : \" line" >> saisie.sh
+echo "echo \"\$1 : \$line\" >> \$2/chat" >> saisie.sh
+echo "clear" >> saisie.sh
+echo "done" >> saisie.sh
+
+#connection au serveur
+xterm -hold -e "tail -f $DIR_SERVEUR/chat" &
+xterm -hold -e "./saisie.sh $PSEUDO $DIR_SERVEUR" &
+
+sleep 1
+
+#Attente fermeture manuel d'un des terminaux
+while [ $(ps ax | grep "xterm" | wc -l) -eq 3 ]
+do
+	sleep 0.1
+done 	
+
+if [ $(ps ax | grep "xterm" | wc -l) -eq 2 ]
+	then
+
+	#Fermer le deuxieme terminal
+	tmp=$(ps ax | grep "xterm" | cut -d" " -f1)
+	kill $(echo $tmp |cut -d" " -f1)
+
+	#Supprimer les fichiers temps
+	rm -fr saisie.sh
+
+	#Fermeture du serveur (si local)
+	if [ $DIR_SERVEUR == "/home/$(whoami)/.chat" ]
+		then
+		rm -fr /home/$(whoami)/.chat/
+		chmod g-x  /home/$(whoami)
+		chmod o-x  /home/$(whoami)
+	fi
+fi
