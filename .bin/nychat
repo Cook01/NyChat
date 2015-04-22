@@ -1,8 +1,8 @@
 #!/bin/bash
 
 #cherche les salons existants
-tmp01=$(ls -la /home | grep "^d.....x..x" | cut -f4 -d" ")
-for var in $tmp01
+tmp=$(ls -la /home | grep "^d.....x..x" | cut -f4 -d" ")
+for var in $tmp
 do
 	DIRECTORY=/home/$var/.chat
 	if [ -d "$DIRECTORY" ] 
