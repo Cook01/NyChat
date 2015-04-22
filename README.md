@@ -1,8 +1,16 @@
-# NyChat
+NyChat
+==
 Un script/soft de chat inter-sessions sur un même serveur
+--
 
-## Problemes :
+###Installation :
+> ./setup.sh
+
+###Utilisation :
+> nycat
+
+#### Problemes :
 - Kill du deuxieme terminal marche une fois sur deux
 
-## Ameliorations possibles :
+#### Ameliorations possibles :
 - Gestion des pseudos
