@@ -2,4 +2,4 @@
 Un script/soft de chat inter-sessions sur un même serveur
 
 ## Problemes :
-- definition du $PATh ne marche pas
+- Kill du deuxieme terminal marche une fois sur deux
