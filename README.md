@@ -4,10 +4,10 @@ Un script/soft de chat inter-sessions sur un même serveur
 --
 
 ###Installation :
-> ./setup.sh
+<code>./setup.sh</code>
 
 ###Utilisation :
-> nycat
+<code>nychat</code>
 
 #### Problemes :
 - Kill du deuxieme terminal marche une fois sur deux
