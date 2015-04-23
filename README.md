@@ -5,13 +5,14 @@ Un script/soft de chat inter-sessions sur un même serveur
 
 
 ###Installation :
+####Installation automatique
 <code>./setup.sh</code> Dans le dossier du projet pour installer le script
 
-Shells supportés par le setup.sh :
+#####Shells supportés par le setup.sh :
   - Bash
   - Zsh
 
-Installation manuelle :
+####Installation manuelle :
   - Copier le dossier .bin dans le home
   - Metre les droits en execution pour le fichier nychat dans le dossier .bin : <code>chmod +x ~/.bin/nychat</code>
   - Ajouter la ligne suivante dans le fichier de config de votre shell (.bashrc pour bash) :
@@ -22,7 +23,7 @@ Installation manuelle :
 
 <code>nychat true</code> pour creer un salon sur votre session même si un salon existe déjà ailleur
 
-#### Problemes :
+#### Problemes connus :
 
 #### Ameliorations possibles :
 - Gestion des pseudos
