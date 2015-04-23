@@ -1,6 +1,6 @@
 NyChat
 ==
-Un script/soft de chat inter-sessions sur un même serveur
+Un script de chat inter-sessions sur un même serveur (sans reseau)
 
 
 
