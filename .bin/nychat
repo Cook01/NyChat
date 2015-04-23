@@ -75,16 +75,21 @@ xterm -hold -e "./saisie.sh $PSEUDO $DIR_SERVEUR" &
 sleep 1
 
 #Attente fermeture manuel d'un des terminaux
-while [ $(ps ax | grep "xterm" | wc -l) -eq 3 ]
+while [ $(ps ax | grep "xterm" | wc -l) -ge 3 ]
 do
 	sleep 0.1
 done 	
 
-if [ $(ps ax | grep "xterm" | wc -l) -eq 2 ]
+if [ $(ps ax | grep "xterm" | wc -l) -lt 3 ]
 	then
 
 	#Fermer le deuxieme terminal
-	tmp=$(ps ax | grep "xterm" | cut -d" " -f1)
+	tmp=$(ps ax | grep "xterm" | cut -d" " -f2)
+
+	if ! [[ $tmp =~ '^[0-9]+$' ]] ; then
+	   tmp=$(ps ax | grep "xterm" | cut -d" " -f1)
+	fi
+	
 	kill $(echo $tmp |cut -d" " -f1)
 
 	#Supprimer les fichiers temps
