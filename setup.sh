@@ -9,43 +9,29 @@ chmod +x $HOME/.bin/nychat
 #Pour zsh
 if [[ $SHELL == "/bin/zsh" ]]
 	then
-
-	DEJA_EXPORTE=0
-	while read ligne
-	do
-		if [[ $ligne == 'export PATH=$PATH:$HOME/.bin' ]]
-			then
-	   		DEJA_EXPORTE=1
-	   fi
-	done < $HOME/.zshrc
-
-	if [ $DEJA_EXPORTE -eq 0 ]
-		then
-		echo '' >> $HOME/.zshrc
-		echo '#configs pour NyChat' >> $HOME/.zshrc
-		echo 'export PATH=$PATH:$HOME/.bin' >> $HOME/.zshrc
-	fi
+	FICHIER_CONFIG=zshrc
+#Pour bash
+elif [[ $SHELL == "/bin/bash" ]]
+	then
+	FICHIER_CONFIG=bashrc
+else
+	FICHIER_CONFIG=dev/null
 fi
 
-#Pour bash
-if [[ $SHELL == "/bin/bash" ]]
-	then
-
-	DEJA_EXPORTE=0
-	while read ligne
-	do
-		if [[ $ligne == 'export PATH=$PATH:$HOME/.bin' ]]
-			then
-	   		DEJA_EXPORTE=1
-	   fi
-	done < $HOME/.bashrc
-
-	if [ $DEJA_EXPORTE -eq 0 ]
+DEJA_EXPORTE=0
+while read ligne
+do
+	if [[ $ligne == 'export PATH=$PATH:$HOME/.bin' ]]
 		then
-		echo '' >> $HOME/.bashrc
-		echo '#configs pour NyChat' >> $HOME/.bashrc
-		echo 'export PATH=$PATH:$HOME/.bin' >> $HOME/.bashrc
-	fi
+   		DEJA_EXPORTE=1
+   fi
+done < $HOME/.$FICHIER_CONFIG
+
+if [ $DEJA_EXPORTE -eq 0 ]
+	then
+	echo '' >> $HOME/.$FICHIER_CONFIG
+	echo '#configs pour NyChat' >> $HOME/.$FICHIER_CONFIG
+	echo 'export PATH=$PATH:$HOME/.bin' >> $HOME/.$FICHIER_CONFIG
 fi
 
 #Fin de l'installation
