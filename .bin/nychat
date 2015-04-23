@@ -1,7 +1,11 @@
 #!/bin/bash
 
+exist(){
+	echo $(ps -p $1 | grep "$1" | wc -l)
+}
+
 #cherche les salons existants
-tmp=$(ls -la /home | grep "^d.....x..x" | cut -f4 -d" ")
+tmp=$(ls -la /home | grep "^d..x..x..x" | cut -f4 -d" ")
 for var in $tmp
 do
 	DIRECTORY=/home/$var/.chat
@@ -57,49 +61,63 @@ PSEUDO=$(whoami)
 DIR_SERVEUR=/home/$SERVEUR_CHOISIT/.chat
 
 #creation du script d'ecriture
-rm -fr saisie.sh
-touch saisie.sh
-chmod +x saisie.sh
+rm -fr $HOME/.bin/saisie.sh
+touch $HOME/.bin/saisie.sh
+chmod +x $HOME/.bin/saisie.sh
 
-echo "while [ true ]" >> saisie.sh
-echo "do" >> saisie.sh
-echo "read -p \"votre message : \" line" >> saisie.sh
-echo "echo \"\$1 : \$line\" >> \$2/chat" >> saisie.sh
-echo "clear" >> saisie.sh
-echo "done" >> saisie.sh
+echo "while [ true ]" >> $HOME/.bin/saisie.sh
+echo "do" >> $HOME/.bin/saisie.sh
+echo "read -p \"votre message : \" line" >> $HOME/.bin/saisie.sh
+echo "TIME=\$(date | cut -d\" \" -f5)" >> $HOME/.bin/saisie.sh
+echo "echo \"\$1 - [\$TIME] : \$line\" >> \$2/chat" >> $HOME/.bin/saisie.sh
+echo "clear" >> $HOME/.bin/saisie.sh
+echo "done" >> $HOME/.bin/saisie.sh
 
 #connection au serveur
 xterm -hold -e "tail -f $DIR_SERVEUR/chat" &
-xterm -hold -e "./saisie.sh $PSEUDO $DIR_SERVEUR" &
+PID_TAIL=$!
 
-sleep 1
+#Annonce de connexion
+echo "********************* $PSEUDO is online  *********************" >> $DIR_SERVEUR/chat
+
+#Lancement du script d'ecriture
+xterm -hold -e "$HOME/.bin/saisie.sh $PSEUDO $DIR_SERVEUR" &
+PID_SAISIE=$!
+
 
 #Attente fermeture manuel d'un des terminaux
-while [ $(ps ax | grep "xterm" | wc -l) -ge 3 ]
+while [[ $(exist $PID_TAIL) == "1" ]] && [[ $(exist $PID_SAISIE) == "1" ]]
 do
-	sleep 0.1
+	sleep 0.002
 done 	
 
-if [ $(ps ax | grep "xterm" | wc -l) -lt 3 ]
+#Si le processus "Tail" existe toujours
+if [[ $(exist $PID_TAIL) == "1" ]]
 	then
 
-	#Fermer le deuxieme terminal
-	tmp=$(ps ax | grep "xterm" | cut -d" " -f2)
+	#Fermer le processus "tail"
+	kill -15 $PID_TAIL
+fi
 
-	if ! [[ $tmp =~ '^[0-9]+$' ]] ; then
-	   tmp=$(ps ax | grep "xterm" | cut -d" " -f1)
-	fi
-	
-	kill $(echo $tmp |cut -d" " -f1)
+#Si le processus "Saisie" existe toujours
+if [[ $(exist $PID_SAISIE) == "1" ]]
+	then
 
-	#Supprimer les fichiers temps
-	rm -fr saisie.sh
+	#Fermer le processus "saisie"
+	kill -15 $PID_SAISIE
+fi
 
-	#Fermeture du serveur (si local)
-	if [ $DIR_SERVEUR == "/home/$(whoami)/.chat" ]
-		then
-		rm -fr /home/$(whoami)/.chat/
-		chmod g-x  /home/$(whoami)
-		chmod o-x  /home/$(whoami)
-	fi
+
+#Annoce de deconnexion
+echo "xxxxxxxxxxxxxxxxxxxxx $PSEUDO is offline xxxxxxxxxxxxxxxxxxxxx" >> $DIR_SERVEUR/chat
+
+#Supprimer les fichiers temps
+rm -fr $HOME/.bin/saisie.sh
+
+#Fermeture du serveur (si local)
+if [ $DIR_SERVEUR == "/home/$(whoami)/.chat" ]
+	then
+	rm -fr /home/$(whoami)/.chat/
+	chmod g-x  /home/$(whoami)
+	chmod o-x  /home/$(whoami)
 fi

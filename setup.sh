@@ -22,7 +22,7 @@ if [[ $SHELL == "/bin/zsh" ]]
 	if [ $DEJA_EXPORTE -eq 0 ]
 		then
 		echo '' >> $HOME/.zshrc
-		echo '#Changement du $PATH pour NyChat' >> $HOME/.zshrc
+		echo '#configs pour NyChat' >> $HOME/.zshrc
 		echo 'export PATH=$PATH:$HOME/.bin' >> $HOME/.zshrc
 	fi
 fi
@@ -43,7 +43,7 @@ if [[ $SHELL == "/bin/bash" ]]
 	if [ $DEJA_EXPORTE -eq 0 ]
 		then
 		echo '' >> $HOME/.bashrc
-		echo '#Changement du $PATH pour NyChat' >> $HOME/.bashrc
+		echo '#configs pour NyChat' >> $HOME/.bashrc
 		echo 'export PATH=$PATH:$HOME/.bin' >> $HOME/.bashrc
 	fi
 fi
