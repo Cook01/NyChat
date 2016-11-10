@@ -19,7 +19,7 @@ done
 NB_SERVEUR=$(echo $SERVEUR | wc -w)
 
 #Creation d'un serveur si besoin
-if [ $NB_SERVEUR -eq 0 ] || [[ $1 == "true" ]]
+if [ $NB_SERVEUR -eq 0 ] || [[ $1 == "create" ]]
 	then
 	echo "creation d'un salon ..."
 	echo ""
