@@ -21,7 +21,7 @@ Un script de chat inter-sessions sur un même serveur (sans reseau)
 ###Utilisation :
 <code>nychat</code> pour se connecter a un salon (en creer un sur votre session si aucun salons trouvé)
 
-<code>nychat true</code> pour creer un salon sur votre session même si un salon existe déjà ailleur
+<code>nychat create</code> pour creer un salon sur votre session même si un salon existe déjà ailleur
 
 #### Problemes connus :
 
